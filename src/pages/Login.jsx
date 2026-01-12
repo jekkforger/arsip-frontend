@@ -20,9 +20,9 @@ function Input({ label, type = "text", value, onChange }) {
 }
 
 export default function Login() {
-  const [email, setEmail] = useState(""); // <-- FIX: kosong
-  const [password, setPassword] = useState(""); // (udah kosong dari awal, tetep)
-  const [remember, setRemember] = useState(true);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [remember, setRemember] = useState(false); // ✅ default: tidak dicentang
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -35,19 +35,21 @@ export default function Login() {
       <div className="min-h-screen grid grid-cols-1 lg:grid-cols-[3fr_2fr]">
         {/* LEFT */}
         <div className="relative bg-[#1D4ED8] overflow-hidden">
-          {/* Logo + brand text */}
-          <div className="absolute left-10 top-0 flex items-center gap-3 text-white">
-            <div className="flex items-center gap-3">
-              <img
-                src={logo}
-                alt="Logo Digitalisasi Arsip"
-                className="h-[250px] w-[250px] object-contain"
-              />
-            </div>
+          {/* Logo (non-mobile, lebih gede, responsif) */}
+          <div className="absolute left-10 top-8 hidden md:flex items-start z-10">
+            <img
+              src={logo}
+              alt="Logo Digitalisasi Arsip"
+              className="
+                w-auto object-contain select-none
+                h-16 md:h-20 lg:h-24 xl:h-28
+              "
+              draggable="false"
+            />
           </div>
 
-          {/* Ilustrasi: posisinya agak ke bawah & gede */}
-          <div className="h-full flex items-center justify-center px-10 pt-28 pb-14 lg:pt-0">
+          {/* Ilustrasi */}
+          <div className="h-full flex items-center justify-center px-10 py-10">
             <div className="w-full max-w-[560px]">
               <img
                 src={illustration}
@@ -83,7 +85,7 @@ export default function Login() {
 
               <Input
                 label="Password"
-                type="password"
+                type={remember ? "text" : "password"} // ✅ toggle tampil/sembunyi
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -95,7 +97,7 @@ export default function Login() {
                   onChange={(e) => setRemember(e.target.checked)}
                   className="h-4 w-4 rounded border-slate-300 text-[#1F5EFF] focus:ring-[#1F5EFF]"
                 />
-                Remember me
+                Tampilkan Password
               </label>
 
               <button
