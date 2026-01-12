@@ -51,24 +51,34 @@ export default function Navbar({ activeKey = "dashboard", onNavigate }) {
                   type="button"
                   onClick={() => onNavigate?.(item.key)}
                   className={[
-                    "flex w-full items-center gap-4 text-left transition",
-                    isActive
-                      ? "text-white"
-                      : "text-white/50 hover:text-white/80",
+                    "group flex w-full items-center gap-4 text-left transition",
+                    isActive ? "text-white" : "text-white/50 hover:text-white",
                   ].join(" ")}
                 >
-                  {/* icon tanpa kotak */}
+                  {/* icon */}
                   <img
                     src={item.icon}
                     alt=""
-                    className={[
-                      "h-6 w-6",
-                      isActive ? "opacity-100" : "opacity-50",
-                    ].join(" ")}
                     draggable="false"
+                    className={[
+                      "h-6 w-6 transition-opacity",
+                      isActive
+                        ? "opacity-100"
+                        : "opacity-50 group-hover:opacity-100",
+                    ].join(" ")}
                   />
 
-                  <span className="text-[16px] font-normal">{item.label}</span>
+                  {/* text */}
+                  <span
+                    className={[
+                      "text-[16px] font-normal transition-opacity",
+                      isActive
+                        ? "opacity-100"
+                        : "opacity-50 group-hover:opacity-100",
+                    ].join(" ")}
+                  >
+                    {item.label}
+                  </span>
                 </button>
               </li>
             );
