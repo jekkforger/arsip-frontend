@@ -1,21 +1,25 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
+import AppLayout from "./layouts/AppLayout";
 
-import Login from "./pages/Login.jsx";
-import DashboardKaban from "./pages/Kaban/Dashboard/Dashboard.jsx";
+import Login from "./pages/Login";
+
+import Dashboard from "./pages/Kaban/Dashboard/Dashboard";
+import Pencarian from "./pages/Kaban/Pencarian/Pencarian";
+import Favorit from "./pages/Kaban/Favorit/Favorit";
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* default langsung dashboard */}
-        <Route path="/" element={<Navigate to="/admin/kaban/dashboard" replace />} />
+    <Routes>
+      <Route path="/" element={<Navigate to="/kaban/dashboard" replace />} />
+      <Route path="/login" element={<Login />} />
 
-        <Route path="/login" element={<Login />} />
-        <Route path="/admin/kaban/dashboard" element={<DashboardKaban />} />
+      <Route element={<AppLayout />}>
+        <Route path="/kaban/dashboard" element={<Dashboard />} />
+        <Route path="/kaban/search" element={<Pencarian />} />
+        <Route path="/kaban/favorite" element={<Favorit />} />
+      </Route>
 
-        {/* fallback */}
-        <Route path="*" element={<Navigate to="/admin/kaban/dashboard" replace />} />
-      </Routes>
-    </BrowserRouter>
+      <Route path="*" element={<Navigate to="/kaban/dashboard" replace />} />
+    </Routes>
   );
 }

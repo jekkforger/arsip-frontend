@@ -1,7 +1,7 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 import logo from "../assets/logo-arsip.png";
 
-// SVG di-import sebagai file biasa (URL)
 import gridSvg from "./icons/dashboard.svg";
 import searchSvg from "./icons/search.svg";
 import starSvg from "./icons/favorit.svg";
@@ -10,30 +10,24 @@ import logSvg from "./icons/log-aktivitas.svg";
 import logoutSvg from "./icons/logout.svg";
 
 const navItems = [
-  { key: "dashboard", label: "Dashboard", icon: gridSvg },
-  { key: "search", label: "Pencarian Dokumen", icon: searchSvg },
-  { key: "favorite", label: "Favorit", icon: starSvg },
-  { key: "approval", label: "Persetujuan Akses", icon: approvalSvg },
-  { key: "activity", label: "Log Aktivitas", icon: logSvg },
+  { key: "dashboard", label: "Dashboard", icon: gridSvg, to: "/kaban/dashboard" },
+  { key: "search", label: "Pencarian Dokumen", icon: searchSvg, to: "/kaban/search" },
+  { key: "favorite", label: "Favorit", icon: starSvg, to: "/kaban/favorite" },
+  { key: "approval", label: "Persetujuan Akses", icon: approvalSvg, to: "/kaban/approval" },
+  { key: "activity", label: "Log Aktivitas", icon: logSvg, to: "/kaban/activity" },
 ];
 
-export default function Navbar({ activeKey = "dashboard", onNavigate }) {
+export default function Navbar() {
   return (
-    <aside
-      className="
-        hidden md:flex
-        fixed left-0 top-0 z-50 h-screen w-[280px]
-        flex-col bg-[#1D4ED8] text-white
-      "
-    >
-      {/* Brand / Logo */}
+    <aside className="hidden md:flex fixed left-0 top-0 z-50 h-screen w-[280px] flex-col bg-[#1D4ED8] text-white">
+      {/* Logo */}
       <div className="px-6 pt-10 pb-10 flex justify-center">
         <div className="w-full max-w-[220px] overflow-hidden">
           <img
             src={logo}
             alt="Digitalisasi Arsip"
             draggable="false"
-            style={{ height: 140 }} // <-- lebih gede
+            style={{ height: 140 }}
             className="w-full object-cover select-none"
           />
         </div>
@@ -42,47 +36,43 @@ export default function Navbar({ activeKey = "dashboard", onNavigate }) {
       {/* Menu */}
       <nav className="flex-1 px-8">
         <ul className="space-y-7">
-          {navItems.map((item) => {
-            const isActive = activeKey === item.key;
+          {navItems.map((item) => (
+            <li key={item.key}>
+              <NavLink
+                to={item.to}
+                className={({ isActive }) =>
+                  [
+                    "group flex w-full items-center gap-4 text-left transition-colors duration-150",
+                    isActive
+                      ? "text-white"
+                      : "text-white/50 hover:text-white/80",
+                  ].join(" ")
+                }
+              >
+                {({ isActive }) => (
+                  <>
+                    {/* ICON */}
+                    <img
+                      src={item.icon}
+                      alt=""
+                      draggable="false"
+                      className={[
+                        "h-6 w-6 transition-opacity duration-150",
+                        isActive
+                          ? "opacity-100"
+                          : "opacity-50 group-hover:opacity-80",
+                      ].join(" ")}
+                    />
 
-            return (
-              <li key={item.key}>
-                <button
-                  type="button"
-                  onClick={() => onNavigate?.(item.key)}
-                  className={[
-                    "group flex w-full items-center gap-4 text-left transition",
-                    isActive ? "text-white" : "text-white/50 hover:text-white",
-                  ].join(" ")}
-                >
-                  {/* icon */}
-                  <img
-                    src={item.icon}
-                    alt=""
-                    draggable="false"
-                    className={[
-                      "h-6 w-6 transition-opacity",
-                      isActive
-                        ? "opacity-100"
-                        : "opacity-50 group-hover:opacity-100",
-                    ].join(" ")}
-                  />
-
-                  {/* text */}
-                  <span
-                    className={[
-                      "text-[16px] font-normal transition-opacity",
-                      isActive
-                        ? "opacity-100"
-                        : "opacity-50 group-hover:opacity-100",
-                    ].join(" ")}
-                  >
-                    {item.label}
-                  </span>
-                </button>
-              </li>
-            );
-          })}
+                    {/* LABEL */}
+                    <span className="text-[16px] font-normal">
+                      {item.label}
+                    </span>
+                  </>
+                )}
+              </NavLink>
+            </li>
+          ))}
         </ul>
       </nav>
 
@@ -90,12 +80,12 @@ export default function Navbar({ activeKey = "dashboard", onNavigate }) {
       <div className="px-8 pb-8 pt-6">
         <button
           type="button"
-          className="flex items-center gap-4 text-white/80 hover:text-white transition"
+          className="group flex items-center gap-4 text-white/80 hover:text-white transition-colors duration-150"
         >
           <img
             src={logoutSvg}
             alt=""
-            className="h-6 w-6 opacity-80"
+            className="h-6 w-6 opacity-80 transition-opacity duration-150 group-hover:opacity-100"
             draggable="false"
           />
           <span className="text-[16px] font-normal">Logout</span>
