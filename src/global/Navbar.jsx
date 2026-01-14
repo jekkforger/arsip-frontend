@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import logo from "../assets/logo-arsip.png";
 
 import gridSvg from "./icons/dashboard.svg";
@@ -13,149 +13,48 @@ import laporanSvg from "./icons/laporan.svg";
 import akunSvg from "./icons/akun-pengguna.svg";
 import logoutSvg from "./icons/logout.svg";
 
-/** Ambil role dari URL prefix */
-function getRoleFromPath(pathname) {
-  if (pathname.startsWith("/scanner")) return "scanner";
-  if (pathname.startsWith("/pegawai")) return "pegawai";
-  if (pathname.startsWith("/kaban")) return "kaban";
-  if (pathname.startsWith("/admin")) return "admin";
-  return "guest";
-}
+import { getRole, clearAuth } from "../auth/auth"; // ✅ IMPORTANT
 
 const NAV_BY_ROLE = {
   kaban: [
-    {
-      key: "dashboard",
-      label: "Dashboard",
-      icon: gridSvg,
-      to: "/kaban/dashboard",
-      end: true,
-    },
-    {
-      key: "search",
-      label: "Pencarian Dokumen",
-      icon: searchSvg,
-      to: "/kaban/search",
-    },
+    { key: "dashboard", label: "Dashboard", icon: gridSvg, to: "/kaban/dashboard", end: true },
+    { key: "search", label: "Pencarian Dokumen", icon: searchSvg, to: "/kaban/search" },
     { key: "favorite", label: "Favorit", icon: starSvg, to: "/kaban/favorite" },
-    {
-      key: "approval",
-      label: "Persetujuan Akses",
-      icon: approvalSvg,
-      to: "/kaban/approval",
-    },
-    {
-      key: "activity",
-      label: "Log Aktivitas",
-      icon: logSvg,
-      to: "/kaban/activity",
-    },
+    { key: "approval", label: "Persetujuan Akses", icon: approvalSvg, to: "/kaban/approval" },
+    { key: "activity", label: "Log Aktivitas", icon: logSvg, to: "/kaban/activity" },
   ],
 
   pegawai: [
-    {
-      key: "search",
-      label: "Pencarian Dokumen",
-      icon: searchSvg,
-      to: "/pegawai/search",
-      end: true,
-    },
-    {
-      key: "input",
-      label: "Input Dokumen",
-      icon: inputSvg, // kalau punya icon input sendiri, ganti di sini
-      to: "/pegawai/input",
-    },
-    {
-      key: "favorite",
-      label: "Favorit",
-      icon: starSvg,
-      to: "/pegawai/favorite",
-    },
-    {
-      key: "status",
-      label: "Status Permintaan",
-      icon: approvalSvg,
-      to: "/pegawai/status",
-    },
-    {
-      key: "activity",
-      label: "Log Aktivitas",
-      icon: logSvg,
-      to: "/pegawai/activity",
-    },
+    { key: "search", label: "Pencarian Dokumen", icon: searchSvg, to: "/pegawai/search", end: true },
+    { key: "input", label: "Input Dokumen", icon: inputSvg, to: "/pegawai/input" },
+    { key: "favorite", label: "Favorit", icon: starSvg, to: "/pegawai/favorite" },
+    { key: "status", label: "Status Permintaan", icon: approvalSvg, to: "/pegawai/status" },
+    { key: "activity", label: "Log Aktivitas", icon: logSvg, to: "/pegawai/activity" },
   ],
 
   admin: [
-    {
-      key: "dashboard",
-      label: "Dashboard",
-      icon: gridSvg,
-      to: "/admin/dashboard",
-      end: true,
-    },
-    {
-      key: "manajemen",
-      label: "Manajemen Arsip",
-      icon: manajemenSvg,
-      to: "/admin/manajemen-arsip",
-    },
-    {
-      key: "laporan",
-      label: "Laporan",
-      icon: laporanSvg,
-      to: "/admin/laporan",
-    },
-    {
-      key: "activity",
-      label: "Log Aktivitas",
-      icon: logSvg,
-      to: "/admin/log-aktivitas",
-    },
-    {
-      key: "akun",
-      label: "Akun Pengguna",
-      icon: akunSvg,
-      to: "/admin/akun-pengguna",
-    },
+    { key: "dashboard", label: "Dashboard", icon: gridSvg, to: "/admin/dashboard", end: true },
+    { key: "manajemen", label: "Manajemen Arsip", icon: manajemenSvg, to: "/admin/manajemen-arsip" },
+    { key: "laporan", label: "Laporan", icon: laporanSvg, to: "/admin/laporan" },
+    { key: "activity", label: "Log Aktivitas", icon: logSvg, to: "/admin/log-aktivitas" },
+    { key: "akun", label: "Akun Pengguna", icon: akunSvg, to: "/admin/akun-pengguna" },
   ],
 
   scanner: [
-    {
-      key: "dashboard",
-      label: "Dashboard",
-      icon: gridSvg,
-      to: "/scanner/dashboard",
-      end: true,
-    },
-    {
-      key: "input-dokumen",
-      label: "Input Dokumen",
-      icon: inputSvg,
-      to: "/scanner/input-dokumen",
-    },
-    {
-      key: "laporan",
-      label: "Laporan",
-      icon: laporanSvg,
-      to: "/scanner/laporan",
-    },
-    {
-      key: "activity",
-      label: "Log Aktivitas",
-      icon: logSvg,
-      to: "/scanner/log-aktivitas",
-    },
+    { key: "dashboard", label: "Dashboard", icon: gridSvg, to: "/scanner/dashboard", end: true },
+    { key: "input-dokumen", label: "Input Dokumen", icon: inputSvg, to: "/scanner/input-dokumen" },
+    { key: "laporan", label: "Laporan", icon: laporanSvg, to: "/scanner/laporan" },
+    { key: "activity", label: "Log Aktivitas", icon: logSvg, to: "/scanner/log-aktivitas" },
   ],
 };
 
 export default function Navbar() {
-  const { pathname } = useLocation();
+  const role = useMemo(() => getRole() || "guest", []);
 
-  const role = useMemo(() => getRoleFromPath(pathname), [pathname]);
+  // kalau belum login, jangan render sidebar (biar login page bersih)
+  if (role === "guest") return null;
 
-  // fallback kalau role belum kebaca
-  const navItems = NAV_BY_ROLE[role] || NAV_BY_ROLE.kaban;
+  const navItems = NAV_BY_ROLE[role] || [];
 
   return (
     <aside className="hidden md:flex fixed left-0 top-0 z-50 h-screen w-[280px] flex-col bg-[#1D4ED8] text-white">
@@ -193,9 +92,7 @@ export default function Navbar() {
                       alt=""
                       draggable="false"
                       className={`h-6 w-6 transition duration-200 [filter:brightness(0)_invert(1)] ${
-                        isActive
-                          ? "opacity-100"
-                          : "opacity-50 group-hover:opacity-100"
+                        isActive ? "opacity-100" : "opacity-50 group-hover:opacity-100"
                       }`}
                     />
                     <span className="text-[16px] font-normal transition-colors duration-200">
@@ -215,8 +112,7 @@ export default function Navbar() {
           type="button"
           className="group flex w-full items-center gap-4 text-white/50 hover:text-white transition-colors duration-200"
           onClick={() => {
-            // taro logic logout lu di sini (clear token / localStorage)
-            // contoh: localStorage.clear();
+            clearAuth();
             window.location.href = "/login";
           }}
         >

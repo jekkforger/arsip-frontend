@@ -4,6 +4,9 @@ import AppLayout from "./layouts/AppLayout";
 
 import Login from "./pages/Login";
 
+import RequireAuth from "./auth/RequireAuth";
+import RequireRole from "./auth/RequireRole";
+
 // Kaban
 import KabanDashboard from "./pages/Kaban/Dashboard/Dashboard";
 import KabanSearch from "./pages/Kaban/Pencarian/Pencarian";
@@ -13,10 +16,6 @@ import KabanLog from "./pages/Kaban/Log/Log";
 
 // Pegawai
 import PegawaiSearch from "./pages/Pegawai/Pencarian/Pencarian";
-// nanti kalau halaman pegawai lain udah ada tinggal tambah:
-// import PegawaiFavorit from "./pages/Pegawai/Favorit/Favorit";
-// import PegawaiStatus from "./pages/Pegawai/Status/Status";
-// import PegawaiLog from "./pages/Pegawai/Log/Log";
 
 // Admin
 import AdminDashboard from "./pages/Admin/Dashboard/Dashboard";
@@ -33,43 +32,65 @@ export default function App() {
       {/* auth */}
       <Route path="/login" element={<Login />} />
 
-      {/* KABAN (pakai layout yang sama) */}
-      <Route path="/kaban" element={<AppLayout />}>
-        <Route index element={<Navigate to="dashboard" replace />} />
-        <Route path="dashboard" element={<KabanDashboard />} />
-        <Route path="search" element={<KabanSearch />} />
-        <Route path="favorite" element={<KabanFavorit />} />
-        <Route path="approval" element={<KabanPersetujuan />} />
-        <Route path="activity" element={<KabanLog />} />
-      </Route>
+      {/* semua halaman yang butuh login */}
+      <Route element={<RequireAuth />}>
+        <Route element={<AppLayout />}>
+          {/* KABAN */}
+          <Route element={<RequireRole allow={["kaban"]} />}>
+            <Route path="/kaban">
+              <Route index element={<Navigate to="dashboard" replace />} />
+              <Route path="dashboard" element={<KabanDashboard />} />
+              <Route path="search" element={<KabanSearch />} />
+              <Route path="favorite" element={<KabanFavorit />} />
+              <Route path="approval" element={<KabanPersetujuan />} />
+              <Route path="activity" element={<KabanLog />} />
+            </Route>
+          </Route>
 
-      {/* PEGAWAI (pakai layout yang sama) */}
-      <Route path="/pegawai" element={<AppLayout />}>
-        <Route index element={<Navigate to="dashboard" replace />} />
-        <Route path="dashboard" element={<PegawaiSearch />} />
+          {/* PEGAWAI */}
+          <Route element={<RequireRole allow={["pegawai"]} />}>
+            <Route path="/pegawai">
+              {/* lu tadi salah: index ke dashboard tapi elementnya PegawaiSearch */}
+              {/* kita rapihin: default ke search */}
+              <Route index element={<Navigate to="search" replace />} />
+              <Route path="search" element={<PegawaiSearch />} />
 
-        {/*
-        <Route path="favorite" element={<PegawaiFavorit />} />
-        <Route path="status" element={<PegawaiStatus />} />
-        <Route path="activity" element={<PegawaiLog />} />
-        */}
-      </Route>
+              {/*
+              <Route path="input" element={<PegawaiInput />} />
+              <Route path="favorite" element={<PegawaiFavorit />} />
+              <Route path="status" element={<PegawaiStatus />} />
+              <Route path="activity" element={<PegawaiLog />} />
+              */}
+            </Route>
+          </Route>
 
-      {/* PEGAWAI (pakai layout yang sama) */}
-      <Route path="/admin" element={<AppLayout />}>
-        <Route index element={<Navigate to="dashboard" replace />} />
-        <Route path="dashboard" element={<AdminDashboard />} />
+          {/* ADMIN */}
+          <Route element={<RequireRole allow={["admin"]} />}>
+            <Route path="/admin">
+              <Route index element={<Navigate to="dashboard" replace />} />
+              <Route path="dashboard" element={<AdminDashboard />} />
+              {/*
+              <Route path="manajemen-arsip" element={<AdminManajemen />} />
+              <Route path="laporan" element={<AdminLaporan />} />
+              <Route path="log-aktivitas" element={<AdminLog />} />
+              <Route path="akun-pengguna" element={<AdminAkun />} />
+              */}
+            </Route>
+          </Route>
 
-        {/*
-        <Route path="favorite" element={<PegawaiFavorit />} />
-        <Route path="status" element={<PegawaiStatus />} />
-        <Route path="activity" element={<PegawaiLog />} />
-        */}
-      </Route>
-
-      <Route path="/scanner" element={<AppLayout />}>
-        <Route index element={<Navigate to="dashboard" replace />} />
-        <Route path="dashboard" element={<ScannerDashboard />} />
+          {/* SCANNER */}
+          <Route element={<RequireRole allow={["scanner"]} />}>
+            <Route path="/scanner">
+              <Route index element={<Navigate to="dashboard" replace />} />
+              <Route path="dashboard" element={<ScannerDashboard />} />
+              {/*
+              <Route path="input-dokumen" element={<ScannerInputDokumen />} />
+              <Route path="laporan" element={<ScannerLaporan />} />
+              <Route path="log-aktivitas" element={<ScannerLog />} />
+              */}
+            </Route>
+          </Route>
+        </Route>
       </Route>
 
       {/* fallback */}
