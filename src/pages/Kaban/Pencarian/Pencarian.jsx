@@ -1,5 +1,4 @@
 import { useMemo, useState, useContext, useEffect } from "react";
-import SearchHeader from "./components/SearchHeader";
 import SearchResults from "./components/SearchResults";
 import SidePanels from "./components/SidePanels";
 import { TopbarContext } from "../../../layouts/AppLayout";
@@ -16,36 +15,47 @@ const MOCK_DOCS = [
   {
     id: "d2",
     title: "Surat Ketetapan Pajak Daerah",
-    nomorSurat: "973 / 045 / BAPENDA / 2024",
-    nomorArsip: "20240520-143005",
+    nomorSurat: "973 / 046 / BAPENDA / 2024",
+    nomorArsip: "20240520-143006",
     tahun: "2024",
     akses: "terbatas",
   },
   {
     id: "d3",
     title: "Peraturan Bupati Tahun 2020",
-    nomorSurat: "973 / 045 / BAPENDA / 2024",
-    nomorArsip: "20240520-143005",
-    tahun: "2024",
+    nomorSurat: "180 / 012 / SETDA / 2020",
+    nomorArsip: "20200115-091200",
+    tahun: "2020",
     akses: "rahasia",
   },
+
+  // ===== dummy tambahan buat test scroll =====
+  ...Array.from({ length: 15 }, (_, i) => ({
+    id: `dx-${i}`,
+    title: `Dokumen Dummy Pajak ${i + 1}`,
+    nomorSurat: `900 / ${100 + i} / BAPENDA / 2023`,
+    nomorArsip: `20231201-${100000 + i}`,
+    tahun: "2023",
+    akses: i % 3 === 0 ? "umum" : i % 3 === 1 ? "terbatas" : "rahasia",
+  })),
 ];
+
 
 export default function Pencarian() {
   const [query, setQuery] = useState("");
   const [favorites, setFavorites] = useState(new Set(["d3"]));
 
-  // set topbar global utk halaman ini (biar gak nyangkut dari dashboard)
-  const topbarCtx = useContext(TopbarContext);
+  // Topbar global: judul + search aktif (search dari topbar)
+  const { setTopbar } = useContext(TopbarContext);
+
   useEffect(() => {
-    if (!topbarCtx?.setTopbar) return;
-    topbarCtx.setTopbar({
+    setTopbar({
       title: "Pencarian Dokumen",
-      showSearch: false, // karena search udah ada di konten
+      showSearch: true,
       searchPlaceholder: "Cari dokumen",
-      onSearch: null,
+      onSearch: (q) => setQuery(q),
     });
-  }, [topbarCtx]);
+  }, [setTopbar]);
 
   const results = useMemo(() => {
     if (!query.trim()) return MOCK_DOCS;
@@ -80,9 +90,8 @@ export default function Pencarian() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <SearchHeader query={query} setQuery={setQuery} onOpenMetadata={openMetadata} />
-
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1.15fr_0.85fr]">
+        {/* kiri: hasil pencarian */}
         <SearchResults
           results={results}
           favorites={favorites}
@@ -90,6 +99,7 @@ export default function Pencarian() {
           onOpenMetadata={openMetadata}
         />
 
+        {/* kanan: pencarian terakhir + favorit */}
         <SidePanels
           recent={recent}
           favoriteDocs={favoriteDocs}

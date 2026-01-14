@@ -1,10 +1,14 @@
 import DocumentCard from "./DocumentCard";
 
-function Panel({ title, children }) {
+function Panel({ title, children, maxBodyHeight = "max-h-[360px]" }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm flex flex-col">
       <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
-      <div className="mt-4 space-y-3">{children}</div>
+
+      {/* BODY SCROLL */}
+      <div className={`mt-4 flex-1 min-h-0 overflow-y-auto pr-1 ${maxBodyHeight}`}>
+        <div className="space-y-3">{children}</div>
+      </div>
     </div>
   );
 }
@@ -17,7 +21,7 @@ export default function SidePanels({
 }) {
   return (
     <div className="space-y-5">
-      <Panel title="Pencarian Terakhir">
+      <Panel title="Pencarian Terakhir" maxBodyHeight="max-h-[360px]">
         {recent.map((doc) => (
           <DocumentCard
             key={doc.id}
@@ -30,7 +34,7 @@ export default function SidePanels({
         ))}
       </Panel>
 
-      <Panel title="Dokumen Favorit">
+      <Panel title="Dokumen Favorit" maxBodyHeight="max-h-[360px]">
         {favoriteDocs.map((doc) => (
           <DocumentCard
             key={doc.id}

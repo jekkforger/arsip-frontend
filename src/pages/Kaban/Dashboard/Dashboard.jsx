@@ -1,4 +1,5 @@
-import { useContext, useEffect } from "react";
+import { useCallback, useContext, useEffect, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { TopbarContext } from "../../../layouts/AppLayout";
 
 import WelcomeCard from "./components/WelcomeCard";
@@ -10,21 +11,44 @@ import AccessRequestTable from "./components/AccessRequestTable";
 import ApprovalCard from "./components/ApprovalCard";
 
 export default function Dashboard() {
-  const topbarCtx = useContext(TopbarContext);
+  const navigate = useNavigate();
+  const { setTopbar } = useContext(TopbarContext);
 
-  useEffect(() => {
-    if (!topbarCtx?.setTopbar) return;
+  // Topbar config (biar gak infinite loop)
+  const handleSearch = useCallback((q) => {
+    console.log("search:", q);
+  }, []);
 
-    topbarCtx.setTopbar({
+  const topbarConfig = useMemo(
+    () => ({
       title: "Dashboard",
       showSearch: true,
       searchPlaceholder: "Cari dokumen",
-      onSearch: (q) => {
-        // nanti bisa navigate ke halaman pencarian sambil bawa query
-        console.log("Search from dashboard:", q);
-      },
-    });
-  }, [topbarCtx]);
+      onSearch: handleSearch,
+    }),
+    [handleSearch]
+  );
+
+  useEffect(() => {
+    setTopbar(topbarConfig);
+  }, [setTopbar, topbarConfig]);
+
+  // ✅ INI ROUTING UNTUK SHORTCUT
+  const onNavigate = useCallback(
+    (key) => {
+      const map = {
+        dashboard: "/kaban/dashboard",
+        search: "/kaban/search",
+        favorite: "/kaban/favorite",
+        approval: "/kaban/approval",
+        activity: "/kaban/activity",
+      };
+
+      const to = map[key];
+      if (to) navigate(to);
+    },
+    [navigate]
+  );
 
   return (
     <>
@@ -57,7 +81,8 @@ export default function Dashboard() {
         </div>
 
         <div className="lg:col-span-8 h-full">
-          <QuickActions className="h-full" />
+          {/* ✅ kirim onNavigate */}
+          <QuickActions className="h-full" onNavigate={onNavigate} />
         </div>
       </section>
 

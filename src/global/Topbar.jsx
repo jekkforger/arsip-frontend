@@ -27,13 +27,16 @@ export default function Topbar({
       {/* kiri: title + search */}
       <div className="min-w-0 flex-1">
         {title ? (
-          <h1 className="text-3xl font-semibold tracking-tight text-slate-900">
+          <h1 className="text-[30px] font-semibold tracking-tight text-slate-900">
             {title}
           </h1>
         ) : null}
 
         {showSearch ? (
-          <form onSubmit={submit} className="mt-4 w-full max-w-[520px]">
+          <form
+            onSubmit={submit}
+            className="mt-6 w-full max-w-[520px]" // 👈 dari mt-4 → mt-6
+          >
             <div
               className="relative h-[48px] w-full overflow-hidden rounded-full
                   border border-slate-200 bg-white shadow-sm

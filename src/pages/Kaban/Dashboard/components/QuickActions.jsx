@@ -3,7 +3,7 @@ import ActionCard from "./ActionCard";
 import dashboardSvg from "../icons/dashboard.svg";
 import searchSvg from "../icons/search.svg";
 import favoritSvg from "../icons/favorit.svg";
-import approvalSvg from "../icons/persetujuan.svg";
+import approvalSvg from "../icons/persetujuan.svg"; // <-- pastiin nama file bener
 import activitySvg from "../icons/log-aktivitas.svg";
 
 export default function QuickActions({ onNavigate, className = "" }) {
@@ -11,13 +11,11 @@ export default function QuickActions({ onNavigate, className = "" }) {
     <div
       className={[
         "h-full",
-        // ✅ 2 baris fix (atas & bawah) dan tiap baris sama tinggi (biar total tinggi rapi)
         "grid grid-cols-1 gap-6",
         "lg:grid-cols-3 lg:grid-rows-2 lg:auto-rows-fr",
         className,
       ].join(" ")}
     >
-      {/* Row 1 (3 card) */}
       <ActionCard
         title="Dashboard"
         desc="Informasi paling update dari semua menu."
@@ -42,7 +40,6 @@ export default function QuickActions({ onNavigate, className = "" }) {
         className="h-full"
       />
 
-      {/* Row 2 (2 card: kiri span 2 kolom, kanan 1 kolom) */}
       <ActionCard
         title="Persetujuan Akses"
         desc="Berikan atau tolak hak akses kepada pengguna."

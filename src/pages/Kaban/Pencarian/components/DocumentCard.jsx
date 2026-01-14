@@ -1,87 +1,93 @@
 import pdfIcon from "../icons/pdf.svg";
-import Badge from "./Badge";
-import favIcon from "../icons/favorit.svg";
+import starIcon from "../icons/favorit.svg";
 
 export default function DocumentCard({
   title,
   nomorSurat,
   nomorArsip,
   tahun,
-  akses = "umum", // umum | terbatas | rahasia
-  isFavorite = false,
+  akses,
+  isFavorite,
   onToggleFavorite,
   onOpen,
   onDownload,
 }) {
-  const aksesLabel = akses?.toLowerCase?.() || "umum";
-
   return (
-    <div className="flex w-full items-center justify-between gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-      <div className="min-w-0 flex-1">
-        <h4 className="truncate text-[15px] font-semibold text-slate-900">
-          {title}
-        </h4>
+    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm flex min-h-[150px] flex-col justify-between">
+      {/* TOP CONTENT */}
+      <div className="flex gap-4">
+        {/* TEXT */}
+        <div className="flex-1 min-w-0">
+          <h4 className="text-sm font-medium text-slate-900">{title}</h4>
 
-        <div className="mt-1 text-[11px] text-slate-500">
-          <span className="mr-2">
-            Nomor Surat: <span className="text-slate-600">{nomorSurat}</span>
-          </span>
-          <span>
-            Nomor Arsip: <span className="text-slate-600">{nomorArsip}</span>
-          </span>
+          <p className="mt-1 text-xs text-slate-500">
+            Nomor Surat: {nomorSurat} &nbsp; Nomor Arsip: {nomorArsip}
+          </p>
+
+          <p className="mt-1 text-xs text-slate-500">Tahun Dokumen: {tahun}</p>
         </div>
 
-        <div className="mt-2 text-[11px] text-slate-500">
-          Tahun Dokumen: <span className="text-slate-700">{tahun}</span>
-        </div>
+        {/* PDF ICON */}
+        <img
+          src={pdfIcon}
+          alt="PDF"
+          className="h-10 w-10 flex-shrink-0"
+          draggable="false"
+        />
+      </div>
 
-        <div className="mt-3 flex flex-wrap items-center gap-2">
+      {/* BOTTOM ACTION */}
+      <div className="mt-4 flex items-center">
+        {/* LEFT: BUTTONS (boleh wrap, tapi star tetap kanan) */}
+        <div className="flex flex-1 min-w-0 flex-wrap items-center gap-2">
           <button
             onClick={onOpen}
-            className="rounded-md bg-[#1F5EFF] px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:brightness-95"
+            className="rounded-lg bg-[#1F5EFF] px-3 py-1.5 text-xs font-medium text-white"
           >
             Buka Dokumen
           </button>
 
-          <Badge variant={aksesLabel}>
-            {aksesLabel === "umum"
+          <span
+            className={[
+              "rounded-lg px-3 py-1.5 text-xs font-medium",
+              akses === "umum"
+                ? "bg-emerald-500 text-white"
+                : akses === "terbatas"
+                ? "bg-amber-500 text-white"
+                : "bg-rose-600 text-white",
+            ].join(" ")}
+          >
+            {akses === "umum"
               ? "Umum"
-              : aksesLabel === "terbatas"
+              : akses === "terbatas"
               ? "Terbatas"
               : "Rahasia"}
-          </Badge>
+          </span>
 
           <button
             onClick={onDownload}
-            className="rounded-md bg-slate-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-800"
+            className="rounded-lg bg-slate-700 px-3 py-1.5 text-xs font-medium text-white"
           >
             Unduh Dokumen
           </button>
-
-          <button
-            onClick={onToggleFavorite}
-            className="ml-1 inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-800"
-            title={isFavorite ? "Hapus dari favorit" : "Tambah ke favorit"}
-          >
-            <img
-              src={favIcon}
-              alt="favorit"
-              className={[
-                "h-[16px] w-[16px]",
-                isFavorite ? "text-amber-500" : "text-slate-400",
-              ].join(" ")}
-              style={{
-                filter: isFavorite
-                  ? "invert(73%) sepia(70%) saturate(546%) hue-rotate(2deg) brightness(96%) contrast(92%)"
-                  : "invert(62%) sepia(8%) saturate(330%) hue-rotate(178deg) brightness(95%) contrast(90%)",
-              }}
-            />
-          </button>
         </div>
-      </div>
 
-      <div className="flex h-[54px] w-[54px] shrink-0 items-center justify-center rounded-lg">
-        <img src={pdfIcon} alt="PDF" className="h-[54px] w-[54px]" />
+        {/* RIGHT: STAR (posisi fix & jarak konsisten) */}
+        <button
+          onClick={onToggleFavorite}
+          className="ml-3 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg hover:bg-slate-100"
+          title="Favorit"
+        >
+          <img
+            src={starIcon}
+            alt="Favorit"
+            className={[
+              "h-4 w-4",
+              isFavorite ? "opacity-100" : "opacity-40",
+            ].join(" ")}
+            draggable="false"
+          />
+        </button>
       </div>
     </div>
   );

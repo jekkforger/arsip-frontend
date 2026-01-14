@@ -10,7 +10,7 @@ import logSvg from "./icons/log-aktivitas.svg";
 import logoutSvg from "./icons/logout.svg";
 
 const navItems = [
-  { key: "dashboard", label: "Dashboard", icon: gridSvg, to: "/kaban/dashboard" },
+  { key: "dashboard", label: "Dashboard", icon: gridSvg, to: "/kaban/dashboard", end: true },
   { key: "search", label: "Pencarian Dokumen", icon: searchSvg, to: "/kaban/search" },
   { key: "favorite", label: "Favorit", icon: starSvg, to: "/kaban/favorite" },
   { key: "approval", label: "Persetujuan Akses", icon: approvalSvg, to: "/kaban/approval" },
@@ -40,32 +40,29 @@ export default function Navbar() {
             <li key={item.key}>
               <NavLink
                 to={item.to}
+                end={item.end}
                 className={({ isActive }) =>
-                  [
-                    "group flex w-full items-center gap-4 text-left transition-colors duration-150",
-                    isActive
-                      ? "text-white"
-                      : "text-white/50 hover:text-white/80",
-                  ].join(" ")
+                  `group flex w-full items-center gap-4 text-left transition-colors duration-200 ${
+                    isActive ? "text-white" : "text-white/50 hover:text-white"
+                  }`
                 }
               >
                 {({ isActive }) => (
                   <>
-                    {/* ICON */}
+                    {/* ICON: Menggunakan group-hover dan isActive untuk mengontrol opacity */}
                     <img
                       src={item.icon}
                       alt=""
                       draggable="false"
-                      className={[
-                        "h-6 w-6 transition-opacity duration-150",
-                        isActive
-                          ? "opacity-100"
-                          : "opacity-50 group-hover:opacity-80",
-                      ].join(" ")}
+                      className={`h-6 w-6 transition duration-200 [filter:brightness(0)_invert(1)] ${
+                        isActive 
+                          ? "opacity-100" 
+                          : "opacity-50 group-hover:opacity-100"
+                      }`}
                     />
 
                     {/* LABEL */}
-                    <span className="text-[16px] font-normal">
+                    <span className="text-[16px] font-normal transition-colors duration-200">
                       {item.label}
                     </span>
                   </>
@@ -77,15 +74,15 @@ export default function Navbar() {
       </nav>
 
       {/* Logout */}
-      <div className="px-8 pb-8 pt-6">
+      <div className="px-8 pb-8 pt-6 border-t border-white/10">
         <button
           type="button"
-          className="group flex items-center gap-4 text-white/80 hover:text-white transition-colors duration-150"
+          className="group flex w-full items-center gap-4 text-white/50 hover:text-white transition-colors duration-200"
         >
           <img
             src={logoutSvg}
             alt=""
-            className="h-6 w-6 opacity-80 transition-opacity duration-150 group-hover:opacity-100"
+            className="h-6 w-6 opacity-50 transition duration-200 [filter:brightness(0)_invert(1)] group-hover:opacity-100"
             draggable="false"
           />
           <span className="text-[16px] font-normal">Logout</span>
