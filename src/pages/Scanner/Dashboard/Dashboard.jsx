@@ -29,8 +29,6 @@ export default function DashboardScanner() {
 
   return (
     <div className="w-full">
-      <h1 className="text-[34px] font-semibold text-slate-900">Dashboard</h1>
-
       {/* ROW 1 */}
       <div className="mt-6 grid grid-cols-12 gap-6">
         <div className="col-span-12 lg:col-span-7">

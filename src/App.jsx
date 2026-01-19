@@ -22,6 +22,7 @@ import AdminDashboard from "./pages/Admin/Dashboard/Dashboard";
 
 // Scanner
 import ScannerDashboard from "./pages/Scanner/Dashboard/Dashboard";
+import ScannerInput from "./pages/Scanner/Input/Input";
 
 export default function App() {
   return (
@@ -83,8 +84,8 @@ export default function App() {
             <Route path="/scanner">
               <Route index element={<Navigate to="dashboard" replace />} />
               <Route path="dashboard" element={<ScannerDashboard />} />
+              <Route path="input-dokumen" element={<ScannerInput />} />
               {/*
-              <Route path="input-dokumen" element={<ScannerInputDokumen />} />
               <Route path="laporan" element={<ScannerLaporan />} />
               <Route path="log-aktivitas" element={<ScannerLog />} />
               */}
